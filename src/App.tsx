@@ -97,6 +97,29 @@ const DEFAULT_ORDERS: Order[] = [
 
 
 export default function App() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [isInstallable, setIsInstallable] = useState(false)
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setIsInstallable(true)
+    }
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+  }, [])
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      deferredPrompt.userChoice.then(() => {
+        setDeferredPrompt(null)
+        setIsInstallable(false)
+      })
+    }
+  }
+
   // Global States loaded from LocalStorage or seed data
   const [restaurant, setRestaurant] = useState<RestaurantInfo>(() => {
     const data = localStorage.getItem('qr_restaurant')
@@ -353,6 +376,16 @@ export default function App() {
         <h1 style={{ fontFamily: 'var(--font-display)', marginBottom: 'var(--spacing-xs)' }}>{restaurant.name}</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem', margin: 0 }}>{restaurant.tagline}</p>
         {restaurant.address && <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: '6px', fontWeight: 600 }}>📍 {restaurant.address}</p>}
+
+        {isInstallable && (
+          <button 
+            className="btn-primary" 
+            style={{ marginTop: 'var(--spacing-md)', fontSize: '1rem', padding: '10px 24px', borderRadius: '100px', display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, var(--color-primary), #f43f5e)', border: 'none', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)' }}
+            onClick={handleInstallClick}
+          >
+            <span style={{ fontSize: '1.2rem' }}>⬇️</span> Tải Ứng Dụng (App)
+          </button>
+        )}
       </header>
 
       <main className="grid-responsive" style={{ maxWidth: '700px', width: '100%' }}>
