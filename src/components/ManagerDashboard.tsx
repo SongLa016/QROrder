@@ -71,6 +71,9 @@ export default function ManagerDashboard({
   // Receipt Printing State
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null)
   const [tableReceiptToPrint, setTableReceiptToPrint] = useState<Table | null>(null)
+  
+  // Edit order state
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null)
 
   const [timeFilter, setTimeFilter] = useState<'day' | 'week' | 'month' | 'custom'>('day')
   // Custom date range (ISO date strings, e.g. '2026-07-01')
@@ -1269,6 +1272,9 @@ export default function ManagerDashboard({
                                   Xác nhận tiền
                                 </button>
                               )}
+                              <button className="btn-secondary" style={{ minHeight: '30px', padding: '4px 8px', fontSize: '0.78rem' }} onClick={() => setEditingOrder(order)}>
+                                ✏️ Sửa
+                              </button>
                               <button className="btn-primary" style={{ minHeight: '30px', padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateOrderStatus(order.id, 'served')}>
                                 ✓ Đã phục vụ
                               </button>
@@ -2297,6 +2303,113 @@ export default function ManagerDashboard({
                 {editingDish ? 'Cập Nhật' : 'Tạo Mới'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Order Modal */}
+      {editingOrder && (
+        <div className="dialog-backdrop" onClick={() => setEditingOrder(null)}>
+          <div className="dialog-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--spacing-sm)' }}>
+              <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
+                Sửa Đơn #{editingOrder.id.slice(-6)}
+              </h2>
+              <button className="btn-ghost" style={{ border: 'none', background: 'none', padding: 'var(--spacing-xs)', minHeight: '40px', minWidth: '40px' }} onClick={() => setEditingOrder(null)}>
+                ✕
+              </button>
+            </header>
+
+            <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-md) 0', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+              {editingOrder.items.map(item => {
+                const dish = menu.find(d => d.id === item.menuItemId)
+                const price = item.snapshotPrice ?? dish?.price ?? 0
+                return (
+                  <div key={item.menuItemId} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', borderBottom: '1px solid var(--color-bg-elevated)', paddingBottom: 'var(--spacing-sm)' }}>
+                    <div style={{ flex: 1 }}>
+                      <strong style={{ display: 'block', fontSize: '0.95rem' }}>{item.snapshotName || dish?.name || 'Món ăn'}</strong>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-primary)' }}>{price.toLocaleString('vi-VN')} đ</span>
+                    </div>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+                      <button 
+                        className="btn-secondary" 
+                        style={{ minWidth: '32px', minHeight: '32px', padding: 0 }}
+                        onClick={() => {
+                          const newQty = item.quantity - 1;
+                          let newItems = [...editingOrder.items];
+                          if (newQty <= 0) {
+                            newItems = newItems.filter(i => i.menuItemId !== item.menuItemId);
+                          } else {
+                            const idx = newItems.findIndex(i => i.menuItemId === item.menuItemId);
+                            newItems[idx] = { ...newItems[idx], quantity: newQty };
+                          }
+                          const newTotal = newItems.reduce((acc, i) => acc + (i.snapshotPrice ?? menu.find(d=>d.id===i.menuItemId)?.price ?? 0) * i.quantity, 0);
+                          setEditingOrder({ ...editingOrder, items: newItems, total: newTotal });
+                        }}
+                      >-</button>
+                      <span style={{ fontWeight: 700, width: '20px', textAlign: 'center' }}>{item.quantity}</span>
+                      <button 
+                        className="btn-secondary" 
+                        style={{ minWidth: '32px', minHeight: '32px', padding: 0 }}
+                        onClick={() => {
+                          const newItems = [...editingOrder.items];
+                          const idx = newItems.findIndex(i => i.menuItemId === item.menuItemId);
+                          newItems[idx] = { ...newItems[idx], quantity: newItems[idx].quantity + 1 };
+                          const newTotal = newItems.reduce((acc, i) => acc + (i.snapshotPrice ?? menu.find(d=>d.id===i.menuItemId)?.price ?? 0) * i.quantity, 0);
+                          setEditingOrder({ ...editingOrder, items: newItems, total: newTotal });
+                        }}
+                      >+</button>
+                    </div>
+                  </div>
+                )
+              })}
+              
+              {/* Thêm món mới */}
+              <div style={{ marginTop: 'var(--spacing-sm)' }}>
+                <strong style={{ display: 'block', marginBottom: 'var(--spacing-xs)' }}>+ Thêm món:</strong>
+                <select 
+                  className="form-control" 
+                  onChange={(e) => {
+                    if (!e.target.value) return;
+                    const dish = menu.find(d => d.id === e.target.value);
+                    if (!dish) return;
+                    const existingIdx = editingOrder.items.findIndex(i => i.menuItemId === dish.id);
+                    let newItems = [...editingOrder.items];
+                    if (existingIdx >= 0) {
+                      newItems[existingIdx].quantity += 1;
+                    } else {
+                      newItems.push({ menuItemId: dish.id, quantity: 1, snapshotName: dish.name, snapshotPrice: dish.price, notes: '' });
+                    }
+                    const newTotal = newItems.reduce((acc, i) => acc + (i.snapshotPrice ?? menu.find(d=>d.id===i.menuItemId)?.price ?? 0) * i.quantity, 0);
+                    setEditingOrder({ ...editingOrder, items: newItems, total: newTotal });
+                    e.target.value = '';
+                  }}
+                >
+                  <option value="">-- Chọn món thêm --</option>
+                  {menu.filter(d => d.available).map(d => (
+                    <option key={d.id} value={d.id}>{d.name} ({d.price.toLocaleString('vi-VN')}đ)</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Tổng tiền mới:</span>
+                <strong style={{ display: 'block', fontSize: '1.2rem', color: 'var(--color-primary)' }}>{editingOrder.total.toLocaleString('vi-VN')} đ</strong>
+              </div>
+              <button 
+                className="btn-primary" 
+                style={{ minHeight: '40px', padding: '0 var(--spacing-lg)' }}
+                onClick={() => {
+                  const updatedOrders = orders.map(o => o.id === editingOrder.id ? editingOrder : o);
+                  updateGlobalState({ orders: updatedOrders }, 'MANAGER_EDIT_ORDER');
+                  setEditingOrder(null);
+                  setToastMessage('Đã cập nhật đơn hàng thành công!');
+                }}
+              >Lưu Thay Đổi</button>
+            </div>
           </div>
         </div>
       )}

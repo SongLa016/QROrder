@@ -10,7 +10,8 @@ import {
   Trash2, 
   CheckCircle,
   HelpCircle,
-  Star
+  Star,
+  Edit3
 } from 'lucide-react'
 
 interface CustomerPortalProps {
@@ -60,6 +61,14 @@ export default function CustomerPortal({
 
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  // Current time state for 2-minute countdown
+  const [currentTime, setCurrentTime] = useState(Date.now())
+  
+  React.useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   // Customer Name State (stored in localStorage)
   const [customerName, setCustomerName] = useState<string>(() => {
@@ -254,12 +263,14 @@ export default function CustomerPortal({
       return t
     })
 
-    const updatedOrders = [newOrder, ...orders]
-
-    updateGlobalState({ orders: updatedOrders, tables: updatedTables }, 'NEW_ORDER')
+    updateGlobalState({ orders: [...orders, newOrder], tables: updatedTables }, 'PLACE_ORDER')
+    
     setCart({})
     setNotes('')
     setIsCartOpen(false)
+    showToast('Đã gửi bếp thành công!')
+    
+    // Switch to status tab to show the tracking
     setActiveTab('status')
     
     if (paymentMethod === 'mobile' && restaurant.paymentQrCode) {
@@ -269,6 +280,29 @@ export default function CustomerPortal({
     } else {
       setShowSuccessModal(true)
     }
+  }
+
+  const handleEditOrder = (order: Order) => {
+    // 1. Delete order from server
+    const updatedOrders = orders.filter(o => o.id !== order.id)
+    updateGlobalState({ orders: updatedOrders }, 'CUSTOMER_EDIT_ORDER')
+    
+    // 2. Load items into cart
+    const newCart = { ...cart }
+    order.items.forEach(item => {
+      if (newCart[item.menuItemId]) {
+        newCart[item.menuItemId].quantity += item.quantity;
+        newCart[item.menuItemId].notes = item.notes || newCart[item.menuItemId].notes;
+      } else {
+        newCart[item.menuItemId] = { quantity: item.quantity, notes: item.notes || '' }
+      }
+    })
+    setCart(newCart)
+    
+    // 3. Switch to menu tab and open cart
+    setActiveTab('menu')
+    setIsCartOpen(true)
+    showToast('Đơn hàng đã được hoàn tác. Bạn có thể sửa và Gửi bếp lại nhé!')
   }
 
   // Submit Customer rating
@@ -536,7 +570,14 @@ export default function CustomerPortal({
               </p>
             </div>
 
-            {currentTableOrders.map(order => (
+            {currentTableOrders.map(order => {
+              const timeDiff = currentTime - order.timestamp;
+              const isEditable = order.status === 'pending' && timeDiff < 120000;
+              const timeRemaining = Math.max(0, Math.floor((120000 - timeDiff) / 1000));
+              const m = Math.floor(timeRemaining / 60);
+              const s = timeRemaining % 60;
+              
+              return (
               <div key={order.id} className="card" style={{ padding: 'var(--spacing-md)', gap: 'var(--spacing-sm)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--spacing-sm)' }}>
                   <div>
@@ -545,10 +586,13 @@ export default function CustomerPortal({
                   </div>
                   
                   {/* Status Badge */}
-                  <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                     {order.status === 'pending' && <span className="badge badge-error">Đang chờ bếp</span>}
                     {order.status === 'served' && <span className="badge badge-info">Đã phục vụ</span>}
                     {order.status === 'completed' && <span className="badge badge-success">Đã hoàn thành</span>}
+                    {isEditable && (
+                      <span style={{ fontSize: '0.7rem', color: 'var(--color-error)', fontWeight: 600 }}>Khóa sau {m}:{s < 10 ? `0${s}` : s}</span>
+                    )}
                   </div>
                 </div>
 
@@ -572,6 +616,17 @@ export default function CustomerPortal({
                   <span style={{ fontSize: '0.9rem' }}>Tổng cộng:</span>
                   <span style={{ color: 'var(--color-primary)' }}>{order.total.toLocaleString('vi-VN')} đ</span>
                 </div>
+
+                {/* Edit Order button (2 minute window) */}
+                {isEditable && (
+                  <button 
+                    className="btn-secondary" 
+                    style={{ width: '100%', minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', marginTop: 'var(--spacing-sm)', display: 'flex', gap: 'var(--spacing-xs)', fontSize: '0.875rem', color: 'var(--color-error)' }}
+                    onClick={() => handleEditOrder(order)}
+                  >
+                    <Edit3 size={16} /> Hủy & Sửa lại món
+                  </button>
+                )}
 
                 {/* Feedback section - Show button if order status is served or completed & hasn't been rated yet */}
                 {order.status !== 'pending' && !order.rating && (
@@ -598,7 +653,8 @@ export default function CustomerPortal({
                   </div>
                 )}
               </div>
-            ))}
+              )
+            })}
 
             {currentTableOrders.length === 0 && (
               <div style={{ textAlign: 'center', padding: 'var(--spacing-xxl) var(--spacing-md)', color: 'var(--color-text-muted)' }}>
