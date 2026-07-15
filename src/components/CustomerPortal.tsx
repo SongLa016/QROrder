@@ -388,22 +388,20 @@ export default function CustomerPortal({
         </div>
         
         {/* Support Buttons */}
-        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+        <div style={{ display: 'flex', gap: 'var(--spacing-xs)' }}>
           <button 
-            className="btn-secondary" 
-            style={{ padding: 'var(--spacing-sm)', borderRadius: 'var(--radius-full)', minHeight: '40px', minWidth: '40px', color: 'var(--color-primary)' }}
+            className="btn-secondary btn-active-scale" 
+            style={{ padding: '6px 12px', borderRadius: 'var(--radius-full)', minHeight: '36px', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700, boxShadow: 'var(--shadow-low)' }}
             onClick={handleCallStaff}
-            title="Gọi nhân viên"
           >
-            <Bell size={18} />
+            <Bell size={16} /> Gọi NV
           </button>
           <button 
-            className="btn-secondary" 
-            style={{ padding: 'var(--spacing-sm)', borderRadius: 'var(--radius-full)', minHeight: '40px', minWidth: '40px', color: 'var(--color-success)' }}
+            className="btn-secondary btn-active-scale" 
+            style={{ padding: '6px 12px', borderRadius: 'var(--radius-full)', minHeight: '36px', color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700, boxShadow: 'var(--shadow-low)' }}
             onClick={handleRequestBill}
-            title="Yêu cầu thanh toán"
           >
-            <Receipt size={18} />
+            <Receipt size={16} /> Tính tiền
           </button>
         </div>
       </header>
