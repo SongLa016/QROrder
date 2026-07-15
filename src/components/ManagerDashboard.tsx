@@ -67,6 +67,10 @@ export default function ManagerDashboard({
   // Print Settings for QR
   const [selectedPrintTables, setSelectedPrintTables] = useState<number[]>(tables.map(t => t.number))
   const [isPrintMode, setIsPrintMode] = useState(false)
+
+  // Receipt Printing State
+  const [receiptOrder, setReceiptOrder] = useState<Order | null>(null)
+
   const [timeFilter, setTimeFilter] = useState<'day' | 'week' | 'month' | 'custom'>('day')
   // Custom date range (ISO date strings, e.g. '2026-07-01')
   const todayStr = new Date().toISOString().slice(0, 10)
@@ -532,6 +536,83 @@ export default function ManagerDashboard({
     return counts.map((count, i) => ({ stars: i + 1, count, pct: (count / max) * 100 }))
   }, [filteredOrders])
 
+
+  // Print receipt side effect
+  React.useEffect(() => {
+    if (receiptOrder) {
+      const timer1 = setTimeout(() => {
+        window.print();
+        const timer2 = setTimeout(() => {
+          setReceiptOrder(null);
+        }, 500);
+      }, 300);
+      return () => clearTimeout(timer1);
+    }
+  }, [receiptOrder]);
+
+  // Render receipt directly
+  if (receiptOrder) {
+    const table = tables.find(t => t.number === receiptOrder.tableNumber);
+    const tableDisp = table ? getTableName(table) : `Bàn ${receiptOrder.tableNumber}`;
+    return (
+      <div style={{ padding: '20px', fontFamily: 'monospace', maxWidth: '300px', margin: '0 auto', color: 'black', backgroundColor: 'white' }}>
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <h2 style={{ margin: '0 0 5px 0', fontSize: '1.5rem' }}>{restaurant.name}</h2>
+          {restaurant.address && <p style={{ margin: 0, fontSize: '0.85rem' }}>{restaurant.address}</p>}
+          <p style={{ margin: '5px 0', fontSize: '0.85rem' }}>{restaurant.tagline}</p>
+          <div style={{ borderBottom: '1px dashed black', margin: '10px 0' }}></div>
+          <h3 style={{ margin: '5px 0' }}>HÓA ĐƠN THANH TOÁN</h3>
+          <p style={{ margin: 0, fontSize: '0.85rem' }}>Số: #{receiptOrder.id.slice(-6)}</p>
+          <p style={{ margin: 0, fontSize: '0.85rem' }}>Ngày: {new Date(receiptOrder.timestamp).toLocaleString('vi-VN')}</p>
+        </div>
+
+        <div style={{ marginBottom: '10px' }}>
+          <p style={{ margin: '2px 0' }}><strong>{tableDisp}</strong></p>
+          {receiptOrder.customerName && <p style={{ margin: '2px 0' }}>Khách hàng: {receiptOrder.customerName}</p>}
+        </div>
+
+        <div style={{ borderBottom: '1px dashed black', margin: '10px 0' }}></div>
+
+        <table style={{ width: '100%', fontSize: '0.85rem', textAlign: 'left', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th style={{ paddingBottom: '5px' }}>Món</th>
+              <th style={{ paddingBottom: '5px', textAlign: 'center' }}>SL</th>
+              <th style={{ paddingBottom: '5px', textAlign: 'right' }}>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            {receiptOrder.items.map((item, idx) => {
+              const dish = menu.find(d => d.id === item.menuItemId);
+              const name = item.snapshotName || dish?.name || 'Món ăn';
+              const price = item.snapshotPrice ?? dish?.price ?? 0;
+              return (
+                <tr key={idx}>
+                  <td style={{ padding: '4px 0', borderBottom: '1px dotted #ccc' }}>{name}</td>
+                  <td style={{ padding: '4px 0', borderBottom: '1px dotted #ccc', textAlign: 'center' }}>{item.quantity}</td>
+                  <td style={{ padding: '4px 0', borderBottom: '1px dotted #ccc', textAlign: 'right' }}>{(price * item.quantity).toLocaleString('vi-VN')}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div style={{ borderBottom: '1px dashed black', margin: '10px 0' }}></div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.1rem', margin: '10px 0' }}>
+          <span>TỔNG CỘNG:</span>
+          <span>{receiptOrder.total.toLocaleString('vi-VN')} đ</span>
+        </div>
+
+        <div style={{ borderBottom: '1px dashed black', margin: '10px 0' }}></div>
+
+        <div style={{ textAlign: 'center', fontSize: '0.85rem', marginTop: '20px' }}>
+          <p style={{ margin: '2px 0' }}>Cảm ơn quý khách!</p>
+          <p style={{ margin: '2px 0' }}>Hẹn gặp lại</p>
+        </div>
+      </div>
+    );
+  }
 
   // If in Print Mode, render separate print layout sheet
   if (isPrintMode) {
@@ -1134,7 +1215,10 @@ export default function ManagerDashboard({
                                   Xác nhận tiền
                                 </button>
                               )}
-                              <button className="btn-secondary" style={{ minHeight: '30px', padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateOrderStatus(order.id, 'completed')}>
+                              <button className="btn-secondary" style={{ minHeight: '30px', padding: '4px 8px', fontSize: '0.78rem' }} onClick={() => setReceiptOrder(order)}>
+                                🖨️ In HĐ
+                              </button>
+                              <button className="btn-primary" style={{ minHeight: '30px', padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateOrderStatus(order.id, 'completed')}>
                                 💳 Hoàn tất TT
                               </button>
                             </div>
@@ -1197,11 +1281,16 @@ export default function ManagerDashboard({
                               return `${item.quantity}× ${name}${price !== undefined ? ` (${price.toLocaleString('vi-VN')} đ)` : ''}`
                             }).join(', ')}
                           </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', borderTop: '1px solid var(--color-border)', paddingTop: '4px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', borderTop: '1px solid var(--color-border)', paddingTop: '4px' }}>
                             <span style={{ color: 'var(--color-text-muted)' }}>
                               {order.paymentMethod === 'cash' ? '💵 Tiền mặt' : order.paymentMethod === 'card' ? '💳 Quẹt thẻ' : '📲 CK'}
                             </span>
-                            <strong style={{ color: 'var(--color-success)' }}>{order.total.toLocaleString('vi-VN')} đ</strong>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <button className="btn-ghost" style={{ padding: '2px 6px', fontSize: '0.75rem', minHeight: '24px', color: 'var(--color-text-main)' }} onClick={() => setReceiptOrder(order)}>
+                                🖨️ In
+                              </button>
+                              <strong style={{ color: 'var(--color-success)' }}>{order.total.toLocaleString('vi-VN')} đ</strong>
+                            </div>
                           </div>
                         </div>
                       )
