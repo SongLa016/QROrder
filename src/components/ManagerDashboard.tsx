@@ -553,7 +553,6 @@ export default function ManagerDashboard({
         {/* Paper Layout */}
         <div className="print-page" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--spacing-lg)' }}>
           {selectedPrintTables.map((num: number) => {
-            const tableUrl = `${window.location.origin}${window.location.pathname}?table=${num}`
             const tenantId = new URLSearchParams(window.location.search).get('r')
             const qrUrl = `${window.location.origin}${window.location.pathname}?r=${tenantId}#/table/${num}`
             const absoluteQrUrl = qrUrl.startsWith('http') ? qrUrl : `https://${window.location.host}${qrUrl}`
