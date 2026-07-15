@@ -93,11 +93,18 @@ app.post('/api/state', async (req, res) => {
   const tenantId = req.query.r
   if (!tenantId) return res.status(400).json({ error: 'Missing tenant ID (r)' })
 
-  await saveState(tenantId, req.body)
+  // Tách các biến điều khiển ra khỏi dữ liệu State
+  const { actionContext, modifiedTableNumbers, ...partialState } = req.body
 
+  // Gộp State mới vào State cũ
+  const currentState = await loadState(tenantId)
+  const newState = { ...currentState, ...partialState }
+  await saveState(tenantId, newState)
+
+  // Phát tín hiệu Real-time cho mọi thiết bị (Gói đúng định dạng {state, actionContext})
   const clients = clientsMap.get(tenantId) || new Set()
   clients.forEach(client => {
-    client.write(`data: ${JSON.stringify(req.body)}\n\n`)
+    client.write(`data: ${JSON.stringify({ state: partialState, actionContext })}\n\n`)
   })
 
   res.json({ success: true })
@@ -121,9 +128,9 @@ app.get('/api/events', async (req, res) => {
   const clients = clientsMap.get(tenantId)
   clients.add(res)
 
-  // Gửi state hiện tại ngay lập tức
+  // Gửi toàn bộ state hiện tại ngay lập tức khi vừa kết nối
   const state = await loadState(tenantId)
-  res.write(`data: ${JSON.stringify(state)}\n\n`)
+  res.write(`data: ${JSON.stringify({ state })}\n\n`)
 
   req.on('close', () => {
     clients.delete(res)
