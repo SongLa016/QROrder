@@ -8,21 +8,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: {
-        name: 'QROrder Manager',
-        short_name: 'QROrder',
-        description: 'Hệ thống gọi món & Quản lý bằng mã QR',
-        theme_color: '#F97316',
-        background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
-          {
-            src: 'icon.svg',
-            sizes: '192x192 512x512',
-            type: 'image/svg+xml'
-          }
-        ]
-      }
+      injectRegister: 'auto',
+      manifest: false,
+      workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg}'] }
     })
   ],
   server: {

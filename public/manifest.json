@@ -1,0 +1,22 @@
+{
+  "name": "QROrder Manager",
+  "short_name": "QROrder",
+  "description": "Hệ thống gọi món & Quản lý bằng mã QR",
+  "theme_color": "#F97316",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/512px-Image_not_available.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
