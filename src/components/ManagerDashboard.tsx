@@ -554,7 +554,7 @@ export default function ManagerDashboard({
         <div className="print-page" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--spacing-lg)' }}>
           {selectedPrintTables.map((num: number) => {
             const tenantId = new URLSearchParams(window.location.search).get('r')
-            const qrUrl = `${window.location.origin}${window.location.pathname}?r=${tenantId}#/table/${num}`
+            const qrUrl = `${window.location.origin}${window.location.pathname}?r=${tenantId}&table=${num}`
             const absoluteQrUrl = qrUrl.startsWith('http') ? qrUrl : `https://${window.location.host}${qrUrl}`
             return (
               <div
