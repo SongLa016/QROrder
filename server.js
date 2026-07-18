@@ -251,6 +251,34 @@ app.get('/api/admin/tenants', async (req, res) => {
   res.json({ tenants: allTenants })
 })
 
+app.post('/api/admin/tenants', async (req, res) => {
+  if (req.headers['x-admin-password'] !== SUPER_ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  const { tenantId, name, password } = req.body
+  if (!tenantId || !name || !password) {
+    return res.status(400).json({ error: 'Missing required fields' })
+  }
+  
+  if (stateMap.has(tenantId)) {
+    return res.status(400).json({ error: 'Mã quán đã tồn tại' })
+  }
+  
+  const newState = {
+    restaurant: {
+      name,
+      tagline: 'Khẩu hiệu kinh doanh',
+      logo: '🍜',
+      password,
+      onboarded: false
+    }
+  }
+  await saveState(tenantId, newState)
+  await setTenantActive(tenantId, true)
+  
+  res.json({ success: true, tenantId })
+})
+
 app.post('/api/admin/tenants/:tenantId/toggle', async (req, res) => {
   if (req.headers['x-admin-password'] !== SUPER_ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' })

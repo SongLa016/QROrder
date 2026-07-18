@@ -18,7 +18,8 @@ import {
   Home,
   ChevronLeft,
   QrCode,
-  Inbox
+  Inbox,
+  LogOut
 } from 'lucide-react'
 
 interface ManagerDashboardProps {
@@ -1013,14 +1014,25 @@ export default function ManagerDashboard({
           </div>
         </div>
 
-        {/* Sync Ping Test Trigger */}
-        <button
-          className="btn-secondary"
-          style={{ minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', fontSize: '0.85rem' }}
-          onClick={playOrderPing}
-        >
-          <RefreshCw size={14} /> Test Ping
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+          <button
+            className="btn-secondary"
+            style={{ minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', fontSize: '0.85rem' }}
+            onClick={playOrderPing}
+          >
+            <RefreshCw size={14} /> Test Ping
+          </button>
+          <button
+            className="btn-outline"
+            style={{ minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', fontSize: '0.85rem', color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+            onClick={() => {
+              const tenantId = new URLSearchParams(window.location.search).get('r')
+              window.location.href = `/?r=${tenantId}`
+            }}
+          >
+            <LogOut size={14} /> Đăng Xuất
+          </button>
+        </div>
       </header>
 
       {isAudioSuspended && (

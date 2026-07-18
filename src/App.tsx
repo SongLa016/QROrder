@@ -40,7 +40,7 @@ export default function App() {
   const [isInstallable, setIsInstallable] = useState(false)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
   const [isBlocked, setIsBlocked] = useState(false)
-  const [landingMode, setLandingMode] = useState<'login' | 'register'>('login')
+
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
@@ -253,66 +253,27 @@ export default function App() {
           <h1 style={{ fontFamily: 'var(--font-display)', marginBottom: 'var(--spacing-xs)' }}>TapOrder SaaS</h1>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-lg)' }}>Nền tảng Quản lý gọi món bằng mã QR.</p>
           
-          <div style={{ display: 'flex', gap: '8px', marginBottom: 'var(--spacing-lg)', background: 'var(--color-bg)', padding: '4px', borderRadius: 'var(--radius-sm)' }}>
-            <button 
-              style={{ flex: 1, padding: '8px', border: 'none', background: landingMode === 'login' ? 'var(--color-surface)' : 'transparent', borderRadius: 'var(--radius-xs)', fontWeight: landingMode === 'login' ? 700 : 500, boxShadow: landingMode === 'login' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'var(--transition-fast)' }}
-              onClick={() => setLandingMode('login')}
-            >
-              Đăng Nhập
-            </button>
-            <button 
-              style={{ flex: 1, padding: '8px', border: 'none', background: landingMode === 'register' ? 'var(--color-surface)' : 'transparent', borderRadius: 'var(--radius-xs)', fontWeight: landingMode === 'register' ? 700 : 500, boxShadow: landingMode === 'register' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', cursor: 'pointer', transition: 'var(--transition-fast)' }}
-              onClick={() => setLandingMode('register')}
-            >
-              Tạo Quán Mới
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            const r = (e.target as any).r.value.trim()
+            if (r) {
+              window.location.href = `/?r=${r}&role=admin`
+            }
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', textAlign: 'left' }}>
+              <div>
+                <label className="form-label">Mã Quán:</label>
+                <input type="text" name="r" className="form-control" placeholder="Ví dụ: quan-pho-a" required />
+              </div>
+              <button type="submit" className="btn-primary" style={{ minHeight: '44px' }}>Truy cập Quản lý</button>
+            </div>
+          </form>
+
+          <div style={{ marginTop: 'var(--spacing-xl)', paddingTop: 'var(--spacing-md)', borderTop: '1px solid var(--color-border)' }}>
+            <button className="btn-ghost" style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }} onClick={() => window.location.href = '/?role=superadmin'}>
+              Dành cho Quản trị viên hệ thống
             </button>
           </div>
-
-          {landingMode === 'login' ? (
-             <form onSubmit={(e) => {
-              e.preventDefault()
-              const r = (e.target as any).r.value.trim()
-              if (r) {
-                // To support both direct login to admin vs just navigating to the tenant
-                // We will navigate to role=admin and the AdminLogin component will catch it if pwd doesn't match
-                // We can't pre-auth easily without an API, so we just set url and let the component handle it.
-                // Actually, let's just go to ?r=...&role=admin and let it prompt for password if we don't know it here.
-                window.location.href = `/?r=${r}&role=admin`
-              }
-            }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', textAlign: 'left' }}>
-                <div>
-                  <label className="form-label">Mã Quán:</label>
-                  <input type="text" name="r" className="form-control" placeholder="Ví dụ: quan-pho-a" required />
-                </div>
-                <button type="submit" className="btn-primary" style={{ minHeight: '44px' }}>Truy cập Quản lý</button>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={(e) => {
-              e.preventDefault()
-              const r = (e.target as any).r.value.trim()
-              const pwd = (e.target as any).pwd.value.trim()
-              if (r && pwd) {
-                // Initialize default restaurant with password
-                const newRestaurant = { ...DEFAULT_RESTAURANT, password: pwd }
-                localStorage.setItem(`qr_restaurant_${r}`, JSON.stringify(newRestaurant))
-                window.location.href = `/?r=${r}&role=admin`
-              }
-            }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', textAlign: 'left' }}>
-                <div>
-                  <label className="form-label">Tạo Mã Quán:</label>
-                  <input type="text" name="r" className="form-control" placeholder="Nhập mã viết liền không dấu..." required />
-                </div>
-                <div>
-                  <label className="form-label">Mật khẩu Quản lý:</label>
-                  <input type="password" name="pwd" className="form-control" placeholder="Nhập mật khẩu..." required />
-                </div>
-                <button type="submit" className="btn-primary" style={{ minHeight: '44px' }}>Khởi tạo Quán</button>
-              </div>
-            </form>
-          )}
         </div>
       </div>
     )

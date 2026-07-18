@@ -1,7 +1,7 @@
 {
-  "name": "QROrder Manager",
-  "short_name": "QROrder",
-  "description": "Hệ thống gọi món & Quản lý bằng mã QR",
+  "name": "TapOrder",
+  "short_name": "TapOrder",
+  "description": "Hệ thống quản lý gọi món bằng mã QR",
   "theme_color": "#F97316",
   "background_color": "#ffffff",
   "display": "standalone",
