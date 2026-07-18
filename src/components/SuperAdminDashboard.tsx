@@ -99,28 +99,30 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
 
   if (!isAuthenticated) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface)', padding: 'var(--spacing-md)' }}>
-        <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '0' }}>
+      <div className="ambient-background" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-md)' }}>
+        <div className="login-card" style={{ maxWidth: '420px', width: '100%', padding: '0' }}>
           <div className="banner-gradient" style={{ padding: 'var(--spacing-xl)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0', textAlign: 'center' }}>
             <h2 style={{ fontFamily: 'var(--font-display)', marginBottom: 0, color: 'inherit' }}>Super Admin Login</h2>
           </div>
           <div style={{ padding: 'var(--spacing-xl)' }}>
           <form onSubmit={(e) => { e.preventDefault(); fetchTenants(password) }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
             <div>
+              <label className="form-label" style={{ marginBottom: '8px', display: 'block', fontWeight: 600 }}>Mật khẩu Super Admin:</label>
               <input 
                 type="password" 
-                className="form-control" 
+                className="form-control-large" 
+                style={{ width: '100%' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
             {error && <p style={{ color: 'var(--color-danger)', fontSize: '0.9rem', margin: 0 }}>{error}</p>}
-            <button type="submit" className="btn-primary" style={{ width: '100%', minHeight: '44px', background: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}>
+            <button type="submit" className="btn-primary btn-active-scale" style={{ width: '100%', minHeight: '52px', fontSize: '1.1rem', fontWeight: 700, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, oklch(60% 0.18 20), oklch(50% 0.18 20))', border: 'none', marginTop: 'var(--spacing-sm)', boxShadow: '0 8px 16px oklch(60% 0.18 20 / 25%)' }}>
               Truy Cập
             </button>
           </form>
-          <button className="btn-outline" onClick={navigateToHome} style={{ width: '100%', marginTop: 'var(--spacing-md)' }}>Quay Lại</button>
+          <button className="btn-outline btn-active-scale" onClick={navigateToHome} style={{ width: '100%', marginTop: 'var(--spacing-md)', minHeight: '44px', borderRadius: 'var(--radius-md)' }}>Quay Lại</button>
           </div>
         </div>
       </div>
