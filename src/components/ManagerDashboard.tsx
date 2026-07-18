@@ -120,6 +120,23 @@ export default function ManagerDashboard({
       }
     }
 
+    // Check for canceled/edited orders (customer canceled)
+    if (orders.length < prevOrdersRef.current.length) {
+      const canceledOrders = prevOrdersRef.current.filter(po => !orders.find(o => o.id === po.id));
+      const pendingCanceled = canceledOrders.filter(o => o.status === 'pending');
+      if (pendingCanceled.length > 0) {
+        shouldPlayCallPing = true;
+        const canceledTexts = pendingCanceled.map(o => {
+          const tableDisp = tables.find(t => t.number === o.tableNumber)?.label || `Bàn ${o.tableNumber}`;
+          return `${tableDisp} (Đơn #${o.id.slice(-6)})`;
+        }).join(', ');
+        // Set a slight delay for the toast to ensure it overrides any other toasts or state updates
+        setTimeout(() => {
+          setToastMessage(`⚠️ Khách hàng đã Hủy/Sửa lại món: ${canceledTexts}`);
+        }, 100);
+      }
+    }
+
     orders.forEach(order => {
       if (order.paymentMethod === 'mobile' && order.paymentReported) {
         const prevOrder = prevOrdersRef.current.find(po => po.id === order.id)

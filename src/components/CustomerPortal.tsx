@@ -482,6 +482,26 @@ export default function CustomerPortal({
               </div>
             </div>
 
+            {/* Ordering Instructions Banner */}
+            <div style={{ padding: 'var(--spacing-md) var(--spacing-md) 0 var(--spacing-md)', backgroundColor: 'var(--color-bg-surface)' }}>
+              <div className="card" style={{ 
+                backgroundColor: 'oklch(97% 0.01 60)', 
+                borderColor: 'var(--color-primary-light)', 
+                padding: 'var(--spacing-md)', 
+                gap: 'var(--spacing-xs)',
+                borderLeft: '4px solid var(--color-primary)',
+                transform: 'none'
+              }}>
+                <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center' }}>
+                  <span style={{ fontSize: '1.2rem' }}>💡</span>
+                  <strong style={{ fontSize: '0.875rem', color: 'var(--color-primary)' }}>Hướng dẫn đặt món:</strong>
+                </div>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: '1.5', margin: 0 }}>
+                  Chọn món bạn thích, thêm vào giỏ hàng và nhấn <strong>"Gửi Bếp"</strong>. Món ăn sẽ được phục vụ tận bàn!
+                </p>
+              </div>
+            </div>
+
             {/* Category horizontal scroller */}
             <div style={{ display: 'flex', gap: 'var(--spacing-sm)', overflowX: 'auto', padding: 'var(--spacing-md) var(--spacing-md)', scrollbarWidth: 'none', backgroundColor: 'var(--color-bg-surface)' }}>
               {categories.map(cat => (

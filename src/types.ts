@@ -50,4 +50,5 @@ export interface RestaurantInfo {
   address?: string
   paymentQrCode?: string
   onboarded?: boolean
+  password?: string
 }

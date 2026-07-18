@@ -1,0 +1,150 @@
+import React, { useState, useEffect } from 'react'
+
+interface Tenant {
+  tenantId: string
+  isActive: boolean
+  restaurantName: string
+}
+
+interface Props {
+  navigateToHome: () => void
+}
+
+export default function SuperAdminDashboard({ navigateToHome }: Props) {
+  const [password, setPassword] = useState('')
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [tenants, setTenants] = useState<Tenant[]>([])
+  const [error, setError] = useState('')
+
+  const fetchTenants = async (pwd: string) => {
+    try {
+      const res = await fetch('/api/admin/tenants', {
+        headers: { 'x-admin-password': pwd }
+      })
+      if (res.status === 401) {
+        setError('Mật khẩu không đúng!')
+        return
+      }
+      const data = await res.json()
+      if (data.tenants) {
+        setTenants(data.tenants)
+        setIsAuthenticated(true)
+        setError('')
+      }
+    } catch (e) {
+      setError('Lỗi kết nối server.')
+    }
+  }
+
+  const toggleTenant = async (tenantId: string, isActive: boolean) => {
+    try {
+      const res = await fetch(`/api/admin/tenants/${tenantId}/toggle`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify({ isActive })
+      })
+      if (res.ok) {
+        setTenants(prev => prev.map(t => t.tenantId === tenantId ? { ...t, isActive } : t))
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface)', padding: 'var(--spacing-md)' }}>
+        <div className="card" style={{ maxWidth: '400px', width: '100%', padding: 'var(--spacing-xl)' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', textAlign: 'center', marginBottom: 'var(--spacing-md)', color: 'var(--color-danger)' }}>Super Admin Login</h2>
+          <form onSubmit={(e) => { e.preventDefault(); fetchTenants(password) }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <div>
+              <input 
+                type="password" 
+                className="form-control" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu Super Admin..."
+                required
+              />
+            </div>
+            {error && <p style={{ color: 'var(--color-danger)', fontSize: '0.9rem', margin: 0 }}>{error}</p>}
+            <button type="submit" className="btn-primary" style={{ width: '100%', minHeight: '44px', background: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}>
+              Truy Cập
+            </button>
+          </form>
+          <button className="btn-outline" onClick={navigateToHome} style={{ width: '100%', marginTop: 'var(--spacing-md)' }}>Quay Lại</button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--color-bg)', padding: 'var(--spacing-xl)' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
+        <div>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--color-text)' }}>Bảng Điều Khiển Super Admin</h1>
+          <p style={{ color: 'var(--color-text-muted)' }}>Quản lý các chi nhánh nhà hàng trong hệ thống.</p>
+        </div>
+        <button className="btn-outline" onClick={navigateToHome}>Thoát</button>
+      </header>
+
+      <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr style={{ background: 'var(--color-surface)', borderBottom: '1px solid var(--color-border)' }}>
+              <th style={{ padding: 'var(--spacing-md)' }}>Mã Quán (Tenant ID)</th>
+              <th style={{ padding: 'var(--spacing-md)' }}>Tên Nhà Hàng</th>
+              <th style={{ padding: 'var(--spacing-md)' }}>Trạng Thái</th>
+              <th style={{ padding: 'var(--spacing-md)', textAlign: 'right' }}>Hành Động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tenants.map(t => (
+              <tr key={t.tenantId} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                <td style={{ padding: 'var(--spacing-md)', fontWeight: 600 }}>{t.tenantId}</td>
+                <td style={{ padding: 'var(--spacing-md)' }}>{t.restaurantName}</td>
+                <td style={{ padding: 'var(--spacing-md)' }}>
+                  <span style={{ 
+                    display: 'inline-block', 
+                    padding: '4px 8px', 
+                    borderRadius: 'var(--radius-sm)', 
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    backgroundColor: t.isActive ? 'oklch(94% 0.03 140)' : 'oklch(95% 0.02 20)',
+                    color: t.isActive ? 'var(--color-success)' : 'var(--color-danger)'
+                  }}>
+                    {t.isActive ? 'Đang Hoạt Động' : 'Bị Khóa'}
+                  </span>
+                </td>
+                <td style={{ padding: 'var(--spacing-md)', textAlign: 'right' }}>
+                  <button 
+                    className={t.isActive ? "btn-outline" : "btn-primary"}
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '0.9rem',
+                      borderColor: t.isActive ? 'var(--color-danger)' : undefined,
+                      color: t.isActive ? 'var(--color-danger)' : undefined
+                    }}
+                    onClick={() => toggleTenant(t.tenantId, !t.isActive)}
+                  >
+                    {t.isActive ? 'Khóa Quán' : 'Mở Khóa'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {tenants.length === 0 && (
+              <tr>
+                <td colSpan={4} style={{ padding: 'var(--spacing-xl)', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                  Chưa có nhà hàng nào trong hệ thống.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
