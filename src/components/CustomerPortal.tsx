@@ -406,9 +406,6 @@ export default function CustomerPortal({
       {/* Mobile Top Header */}
       <header className="banner-gradient" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-md)', borderRadius: '0 0 var(--radius-md) var(--radius-md)', boxShadow: 'var(--shadow-low)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-          <button className="btn-ghost" style={{ padding: 'var(--spacing-xs)', border: 'none', minHeight: '40px', minWidth: '40px', color: 'inherit' }} onClick={navigateToHome}>
-            <ChevronLeft size={24} />
-          </button>
           <div>
             <h1 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', fontWeight: 800, margin: 0, color: 'inherit' }}>{restaurant.name}</h1>
             <p style={{ fontSize: '0.75rem', opacity: 0.9, fontWeight: 600, margin: 0, color: 'inherit' }}>
