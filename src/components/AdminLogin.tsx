@@ -11,11 +11,15 @@ export default function AdminLogin({ onSubmit, navigateToHome, restaurantName }:
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface)', padding: 'var(--spacing-md)' }}>
-      <div className="card" style={{ maxWidth: '400px', width: '100%', padding: 'var(--spacing-xl)' }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', textAlign: 'center', marginBottom: 'var(--spacing-xs)' }}>Đăng Nhập Quản Lý</h2>
-        <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-lg)' }}>
-          {restaurantName}
-        </p>
+      <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '0' }}>
+        <div className="banner-gradient" style={{ padding: 'var(--spacing-xl)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', marginBottom: 'var(--spacing-xs)', color: 'inherit' }}>Đăng Nhập Quản Lý</h2>
+          <p style={{ margin: 0, opacity: 0.9 }}>
+            {restaurantName}
+          </p>
+        </div>
+
+        <div style={{ padding: 'var(--spacing-xl)' }}>
 
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(password) }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
           <div>
@@ -25,7 +29,6 @@ export default function AdminLogin({ onSubmit, navigateToHome, restaurantName }:
               className="form-control" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Nhập mật khẩu..."
               autoFocus
               required
             />
@@ -42,6 +45,7 @@ export default function AdminLogin({ onSubmit, navigateToHome, restaurantName }:
         >
           Quay lại Trang Chủ
         </button>
+        </div>
       </div>
     </div>
   )

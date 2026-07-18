@@ -100,8 +100,11 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
   if (!isAuthenticated) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface)', padding: 'var(--spacing-md)' }}>
-        <div className="card" style={{ maxWidth: '400px', width: '100%', padding: 'var(--spacing-xl)' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', textAlign: 'center', marginBottom: 'var(--spacing-md)', color: 'var(--color-danger)' }}>Super Admin Login</h2>
+        <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '0' }}>
+          <div className="banner-gradient" style={{ padding: 'var(--spacing-xl)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0', textAlign: 'center' }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', marginBottom: 0, color: 'inherit' }}>Super Admin Login</h2>
+          </div>
+          <div style={{ padding: 'var(--spacing-xl)' }}>
           <form onSubmit={(e) => { e.preventDefault(); fetchTenants(password) }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
             <div>
               <input 
@@ -109,7 +112,6 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
                 className="form-control" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập mật khẩu Super Admin..."
                 required
               />
             </div>
@@ -119,6 +121,7 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
             </button>
           </form>
           <button className="btn-outline" onClick={navigateToHome} style={{ width: '100%', marginTop: 'var(--spacing-md)' }}>Quay Lại</button>
+          </div>
         </div>
       </div>
     )
@@ -146,7 +149,6 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
               <input 
                 type="text" 
                 className="form-control" 
-                placeholder="Ví dụ: VibeC Bistro" 
                 value={newTenantName}
                 onChange={e => setNewTenantName(e.target.value)}
                 required 
@@ -157,7 +159,6 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
               <input 
                 type="text" 
                 className="form-control" 
-                placeholder="Ví dụ: vibec-bistro" 
                 value={newTenantId}
                 onChange={e => setNewTenantId(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
                 required 
@@ -169,7 +170,6 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
               <input 
                 type="password" 
                 className="form-control" 
-                placeholder="Nhập mật khẩu cấp cho quán..." 
                 value={newTenantPwd}
                 onChange={e => setNewTenantPwd(e.target.value)}
                 required 

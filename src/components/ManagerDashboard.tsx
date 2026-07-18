@@ -1001,16 +1001,16 @@ export default function ManagerDashboard({
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg-base)', display: 'flex', flexDirection: 'column' }}>
 
       {/* Top dashboard header */}
-      <header className="header-sticky" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--spacing-md)' }}>
+      <header className="header-sticky banner-gradient" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--spacing-md)', boxShadow: 'var(--shadow-low)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
           <button className="btn-ghost" style={{ padding: 'var(--spacing-xs)', border: 'none', minHeight: '40px', minWidth: '40px' }} onClick={navigateToHome} title="Về trang chủ">
             <Home size={20} />
           </button>
           <div>
-            <h1 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-body)', fontWeight: 800 }}>
+            <h1 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', fontWeight: 800, color: 'inherit' }}>
               {restaurant.name}
             </h1>
-            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>Hệ thống vận hành realtime</p>
+            <p style={{ fontSize: '0.75rem', opacity: 0.9, fontWeight: 600 }}>Hệ thống vận hành realtime</p>
           </div>
         </div>
 
@@ -1023,8 +1023,8 @@ export default function ManagerDashboard({
             <RefreshCw size={14} /> Test Ping
           </button>
           <button
-            className="btn-outline"
-            style={{ minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', fontSize: '0.85rem', color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+            className="btn-primary"
+            style={{ backgroundColor: 'var(--color-bg-surface)', color: 'var(--color-danger)', minHeight: '38px', padding: 'var(--spacing-xs) var(--spacing-sm)', fontSize: '0.85rem', border: 'none' }}
             onClick={() => {
               const tenantId = new URLSearchParams(window.location.search).get('r')
               window.location.href = `/?r=${tenantId}`

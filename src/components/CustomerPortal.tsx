@@ -357,7 +357,6 @@ export default function CustomerPortal({
             
             <input
               type="text"
-              placeholder="Ví dụ: Anh Tuấn, Chị Lan..."
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               onKeyDown={(e) => {
@@ -405,14 +404,14 @@ export default function CustomerPortal({
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--color-bg-base)', position: 'relative' }}>
       
       {/* Mobile Top Header */}
-      <header className="header-sticky" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-md)' }}>
+      <header className="banner-gradient" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-md)', borderRadius: '0 0 var(--radius-md) var(--radius-md)', boxShadow: 'var(--shadow-low)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-          <button className="btn-ghost" style={{ padding: 'var(--spacing-xs)', border: 'none', minHeight: '40px', minWidth: '40px' }} onClick={navigateToHome}>
+          <button className="btn-ghost" style={{ padding: 'var(--spacing-xs)', border: 'none', minHeight: '40px', minWidth: '40px', color: 'inherit' }} onClick={navigateToHome}>
             <ChevronLeft size={24} />
           </button>
           <div>
-            <h1 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-body)', fontWeight: 800 }}>{restaurant.name}</h1>
-            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+            <h1 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', fontWeight: 800, margin: 0, color: 'inherit' }}>{restaurant.name}</h1>
+            <p style={{ fontSize: '0.75rem', opacity: 0.9, fontWeight: 600, margin: 0, color: 'inherit' }}>
               Bàn {tableNumber} • Trạng thái: {
                 currentTableStatus?.status === 'billing' ? 'Chờ tính tiền' :
                 currentTableStatus?.status === 'ordering' ? 'Đang phục vụ' : 'Bàn trống'
@@ -853,7 +852,6 @@ export default function CustomerPortal({
               <textarea 
                 className="form-control" 
                 rows={3} 
-                placeholder="Món ăn rất vừa vị, nhân viên phục vụ nhanh..."
                 style={{ resize: 'none', fontFamily: 'var(--font-body)', padding: 'var(--spacing-sm)' }}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}

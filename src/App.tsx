@@ -249,8 +249,10 @@ export default function App() {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface)', padding: 'var(--spacing-md)' }}>
         <div className="card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center', padding: 'var(--spacing-xl)' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-md)' }}>🍽️</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', marginBottom: 'var(--spacing-xs)' }}>TapOrder SaaS</h1>
+          <div className="banner-gradient" style={{ margin: 'calc(-1 * var(--spacing-xl)) calc(-1 * var(--spacing-xl)) var(--spacing-lg) calc(-1 * var(--spacing-xl))', padding: 'var(--spacing-xl)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-sm)' }}>🍽️</div>
+            <h1 style={{ fontFamily: 'var(--font-display)', marginBottom: 0, color: 'inherit' }}>TapOrder SaaS</h1>
+          </div>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-lg)' }}>Nền tảng Quản lý gọi món bằng mã QR.</p>
           
           <form onSubmit={(e) => {
@@ -263,7 +265,7 @@ export default function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', textAlign: 'left' }}>
               <div>
                 <label className="form-label">Mã Quán:</label>
-                <input type="text" name="r" className="form-control" placeholder="Ví dụ: quan-pho-a" required />
+                <input type="text" name="r" className="form-control" required />
               </div>
               <button type="submit" className="btn-primary" style={{ minHeight: '44px' }}>Truy cập Quản lý</button>
             </div>
