@@ -168,7 +168,7 @@ export default function App() {
       }
     }
     
-    eventSource.onerror = (err) => {
+    eventSource.onerror = () => {
       // If 403, SSE usually fails to connect
       eventSource.close()
     }
@@ -272,7 +272,6 @@ export default function App() {
              <form onSubmit={(e) => {
               e.preventDefault()
               const r = (e.target as any).r.value.trim()
-              const pwd = (e.target as any).pwd.value.trim()
               if (r) {
                 // To support both direct login to admin vs just navigating to the tenant
                 // We will navigate to role=admin and the AdminLogin component will catch it if pwd doesn't match
