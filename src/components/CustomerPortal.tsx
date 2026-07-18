@@ -4,7 +4,6 @@ import {
   ShoppingBag, 
   Bell, 
   Receipt, 
-  ChevronLeft, 
   Plus, 
   Minus, 
   Trash2, 
@@ -29,7 +28,6 @@ interface CustomerPortalProps {
     },
     actionContext?: string
   ) => void
-  navigateToHome: () => void
 }
 
 export default function CustomerPortal({
@@ -38,8 +36,7 @@ export default function CustomerPortal({
   menu,
   orders,
   tables,
-  updateGlobalState,
-  navigateToHome
+  updateGlobalState
 }: CustomerPortalProps) {
   // UI states
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả')

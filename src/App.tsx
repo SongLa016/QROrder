@@ -338,7 +338,6 @@ export default function App() {
         orders={orders}
         tables={tables}
         updateGlobalState={updateGlobalState}
-        navigateToHome={() => navigateTo('r=' + tenantId)}
       />
     )
   }
