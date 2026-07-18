@@ -571,3 +571,58 @@ button:active, .btn-active-scale:active {
 .stagger-4 { animation-delay: 0.2s; }
 .stagger-5 { animation-delay: 0.25s; }
 .stagger-6 { animation-delay: 0.3s; }
+
+/* Dashboard UI Upgrades */
+.banner-gradient {
+  background: linear-gradient(135deg, oklch(75% 0.18 55) 0%, oklch(88% 0.12 70) 100%);
+  color: oklch(25% 0.05 40);
+  border: 1px solid oklch(85% 0.1 65);
+}
+
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.metric-card-icon {
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  opacity: 0.04;
+  transform: rotate(-15deg);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.tabs-container {
+  display: flex;
+  background-color: var(--color-bg-elevated);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-full);
+  gap: 4px;
+}
+
+.tab-pill {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-weight: 700;
+  height: 44px;
+  transition: var(--transition-fast);
+}
+
+.tab-pill.active {
+  background-color: var(--color-bg-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-low);
+}
+
+.table-row-hover {
+  transition: var(--transition-fast);
+}
+.table-row-hover:hover {
+  background-color: var(--color-bg-elevated);
+}

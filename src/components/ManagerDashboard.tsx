@@ -1064,7 +1064,8 @@ export default function ManagerDashboard({
       <section className="layout-container" style={{ padding: 'var(--spacing-md) var(--spacing-md) 0 var(--spacing-md)' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-md)', width: '100%' }}>
           {/* Revenue */}
-          <div className="card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+          <div className="card metric-card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+            <TrendingUp className="metric-card-icon" size={80} style={{ color: 'var(--color-success)' }} />
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Doanh thu hôm nay</span>
             <h2 style={{ color: 'var(--color-success)', fontSize: '1.75rem', fontFamily: 'var(--font-body)', fontWeight: 800 }}>
               {totalRevenue.toLocaleString('vi-VN')} đ
@@ -1072,7 +1073,8 @@ export default function ManagerDashboard({
           </div>
 
           {/* Active Orders */}
-          <div className="card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+          <div className="card metric-card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+            <ShoppingBag className="metric-card-icon" size={80} style={{ color: 'var(--color-error)' }} />
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Đơn đang chờ</span>
             <h2 style={{ color: 'var(--color-error)', fontSize: '1.75rem', fontFamily: 'var(--font-body)', fontWeight: 800 }}>
               {activeOrdersCount} đơn
@@ -1080,7 +1082,8 @@ export default function ManagerDashboard({
           </div>
 
           {/* Assistant alerts */}
-          <div className="card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+          <div className="card metric-card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+            <Bell className="metric-card-icon" size={80} style={{ color: 'var(--color-primary)' }} />
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Yêu cầu hỗ trợ</span>
             <h2 style={{ color: 'var(--color-primary)', fontSize: '1.75rem', fontFamily: 'var(--font-body)', fontWeight: 800 }}>
               {callStaffAlerts.length} bàn
@@ -1088,7 +1091,8 @@ export default function ManagerDashboard({
           </div>
 
           {/* Average Rating */}
-          <div className="card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+          <div className="card metric-card" style={{ flex: '1 1 220px', padding: 'var(--spacing-md)', gap: 'var(--spacing-xs)' }}>
+            <Star className="metric-card-icon" size={80} style={{ color: 'var(--color-info)' }} />
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Đánh giá trung bình</span>
             <h2 style={{ color: 'var(--color-info)', fontSize: '1.75rem', fontFamily: 'var(--font-body)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}>
               {averageRating} <Star size={20} fill="var(--color-info)" stroke="var(--color-info)" />
@@ -1098,26 +1102,28 @@ export default function ManagerDashboard({
       </section>
 
       {/* Tabs list */}
-      <nav style={{ display: 'flex', borderBottom: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-surface)', marginTop: 'var(--spacing-md)' }}>
-        <button
-          style={{ flex: 1, background: 'none', border: 'none', borderBottom: activeTab === 'orders' ? '3px solid var(--color-primary)' : 'none', color: activeTab === 'orders' ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: 700, height: '48px' }}
-          onClick={() => setActiveTab('orders')}
-        >
-          Xử Lý Đơn Hàng ({activeOrdersCount})
-        </button>
-        <button
-          style={{ flex: 1, background: 'none', border: 'none', borderBottom: activeTab === 'menu-tables' ? '3px solid var(--color-primary)' : 'none', color: activeTab === 'menu-tables' ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: 700, height: '48px' }}
-          onClick={() => setActiveTab('menu-tables')}
-        >
-          Cấu Hình Menu & Bàn
-        </button>
-        <button
-          style={{ flex: 1, background: 'none', border: 'none', borderBottom: activeTab === 'analytics' ? '3px solid var(--color-primary)' : 'none', color: activeTab === 'analytics' ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: 700, height: '48px' }}
-          onClick={() => setActiveTab('analytics')}
-        >
-          Thống Kê & Phản Hồi
-        </button>
-      </nav>
+      <div className="layout-container" style={{ paddingBottom: 0 }}>
+        <nav className="tabs-container" style={{ margin: 'var(--spacing-md) 0' }}>
+          <button
+            className={`tab-pill ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            Xử Lý Đơn Hàng ({activeOrdersCount})
+          </button>
+          <button
+            className={`tab-pill ${activeTab === 'menu-tables' ? 'active' : ''}`}
+            onClick={() => setActiveTab('menu-tables')}
+          >
+            Cấu Hình Menu & Bàn
+          </button>
+          <button
+            className={`tab-pill ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            Thống Kê & Phản Hồi
+          </button>
+        </nav>
+      </div>
 
       {/* Operations Area */}
       <main style={{ flex: 1, padding: 'var(--spacing-md) 0' }}>

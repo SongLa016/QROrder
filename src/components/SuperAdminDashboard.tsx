@@ -126,12 +126,14 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)', padding: 'var(--spacing-xl)' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
+      <header className="banner-gradient glass-card" style={{ padding: 'var(--spacing-xl)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 'var(--spacing-md) 0 var(--spacing-xl) 0', boxShadow: 'var(--shadow-primary)' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--color-text)' }}>Bảng Điều Khiển Super Admin</h1>
-          <p style={{ color: 'var(--color-text-muted)' }}>Quản lý và cấp quyền cho các chi nhánh nhà hàng.</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, marginBottom: 'var(--spacing-xs)', letterSpacing: '-0.02em' }}>
+            👋 Chúc một ngày tốt lành!
+          </h1>
+          <p style={{ fontWeight: 500, fontSize: '1.1rem', opacity: 0.9 }}>Bảng điều khiển Super Admin - Quản lý và cấp quyền chi nhánh</p>
         </div>
-        <button className="btn-outline" onClick={navigateToHome}>Thoát</button>
+        <button className="btn-primary" style={{ backgroundColor: 'var(--color-bg-surface)', color: 'var(--color-primary)', border: 'none', fontWeight: 800 }} onClick={navigateToHome}>Thoát Dashboard</button>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--spacing-xl)', alignItems: 'start' }}>
@@ -193,7 +195,7 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
             </thead>
             <tbody>
               {tenants.map(t => (
-                <tr key={t.tenantId} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                <tr key={t.tenantId} className="table-row-hover" style={{ borderBottom: '1px solid var(--color-border)' }}>
                   <td style={{ padding: 'var(--spacing-md)', fontWeight: 600 }}>{t.tenantId}</td>
                   <td style={{ padding: 'var(--spacing-md)' }}>{t.restaurantName}</td>
                   <td style={{ padding: 'var(--spacing-md)' }}>
@@ -211,12 +213,12 @@ export default function SuperAdminDashboard({ navigateToHome }: Props) {
                   </td>
                   <td style={{ padding: 'var(--spacing-md)', textAlign: 'right' }}>
                     <button 
-                      className={t.isActive ? "btn-outline" : "btn-primary"}
+                      className={t.isActive ? "btn-secondary" : "btn-primary"}
                       style={{ 
-                        padding: '6px 12px', 
-                        fontSize: '0.9rem',
-                        borderColor: t.isActive ? 'var(--color-danger)' : undefined,
-                        color: t.isActive ? 'var(--color-danger)' : undefined
+                        padding: '6px 16px', 
+                        fontSize: '0.85rem',
+                        borderRadius: 'var(--radius-full)',
+                        minHeight: '36px'
                       }}
                       onClick={() => toggleTenant(t.tenantId, !t.isActive)}
                     >
