@@ -159,7 +159,7 @@ export default function App() {
           if (state.menu) setMenu(state.menu)
           if (state.tables) setTables(state.tables)
           if (state.orders) {
-             if (actionContext === 'NEW_ORDER' && isAdminMode) playOrderPing()
+             if (actionContext === 'PLACE_ORDER' && isAdminMode) playOrderPing()
              setOrders(state.orders)
           }
         }

@@ -382,6 +382,10 @@ export default function ManagerDashboard({
 
   // Save Restaurant Info
   const handleSaveRestaurant = () => {
+    if (!restForm.name.trim()) {
+      alert('Tên nhà hàng không được để trống!')
+      return
+    }
     updateGlobalState({ restaurant: restForm }, 'UPDATE_RESTAURANT')
     setIsEditingRest(false)
   }
@@ -1495,7 +1499,18 @@ export default function ManagerDashboard({
               <div className="card" style={{ gap: 'var(--spacing-sm)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>Thông tin nhà hàng</h2>
-                  <button className="btn-ghost" style={{ border: 'none', background: 'none', padding: 'var(--spacing-xs)', minHeight: '36px' }} onClick={() => setIsEditingRest(!isEditingRest)}>
+                  <button className="btn-ghost" style={{ border: 'none', background: 'none', padding: 'var(--spacing-xs)', minHeight: '36px' }} onClick={() => {
+                    if (!isEditingRest) {
+                      setRestForm({
+                        name: restaurant.name,
+                        tagline: restaurant.tagline,
+                        logo: restaurant.logo,
+                        address: restaurant.address || '',
+                        paymentQrCode: restaurant.paymentQrCode || ''
+                      });
+                    }
+                    setIsEditingRest(!isEditingRest);
+                  }}>
                     <Edit3 size={16} />
                   </button>
                 </div>
